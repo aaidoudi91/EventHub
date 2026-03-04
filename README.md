@@ -158,14 +158,6 @@ python manage.py runserver
 API available at: http://localhost:8000
 Swagger docs at: http://localhost:8000/api/docs/
 
-Default accounts created by the seed command:
-
-| Username | Password  | Role                |
-| -------- | --------- | ------------------- |
-| admin    | admin123  | Admin (full access) |
-| viewer   | viewer123 | Viewer (read-only)  |
-
-
 ### Node.js Backend
 ```bash
 cd backend-node
@@ -188,14 +180,6 @@ npm install
 npm run dev
 ```
 App available at: http://localhost:5173
-
-
-## Demo Account
-This is demo-only credentials for local development and the live demo.
-
-| Username | Password  | Role                           |
-| -------- | --------- | ------------------------------ |
-| viewer   | viewer123 | Viewer — read-only access      |
 
 ## Author
 
