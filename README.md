@@ -143,7 +143,6 @@ Runs independently on port 3000.
 
 ```bash
 cd backend-django
-python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
