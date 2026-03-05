@@ -65,7 +65,7 @@ const LoginPage = () => {
                     />
                 </div>
 
-                <p className="text-indigo-300 text-sm">Web Programming 2026 — Full-Stack Project</p>
+                <p className="text-indigo-300 text-sm">By Aaron Aidoudi - M1 Distributed Artificial Intelligence at Université Paris Cité</p>
             </div>
 
             {/* Right panel — login form */}
