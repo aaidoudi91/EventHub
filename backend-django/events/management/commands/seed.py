@@ -9,12 +9,13 @@ class Command(BaseCommand):
     help = 'Seed the database with sample data'
 
     def handle(self, *args, **kwargs):
+        # Deletions are ordered to respect foreign key constraints
         self.stdout.write('Clearing existing data...')
         Registration.objects.all().delete()
         Participant.objects.all().delete()
         Event.objects.all().delete()
 
-        # Utilisateurs
+        # Users
         if not User.objects.filter(username='admin').exists():
             User.objects.create_superuser('admin', 'admin@eventhub.com', 'admin123')
             self.stdout.write('Created user: admin')
@@ -24,7 +25,7 @@ class Command(BaseCommand):
 
         now = timezone.now()
 
-        # Events
+        # Events: mix of upcoming (open), past (closed) and cancelled to cover all statuses
         events = Event.objects.bulk_create([
             Event(title='AI & Machine Learning Summit', description='Annual conference on the latest advances in AI and ML.', date=now + timedelta(days=10), location='Paris, France', status='open'),
             Event(title='Web Development Bootcamp', description='Intensive 2-day workshop on modern fullstack development.', date=now + timedelta(days=20), location='Lyon, France', status='open'),
@@ -46,7 +47,7 @@ class Command(BaseCommand):
             Participant(first_name='Hugo', last_name='Simon', email='hugo.simon@email.com', phone='0689012345'),
         ])
 
-        # Registrations
+        # Registrations: each open event has between 2 and 4 participants
         registrations = [
             (events[0], participants[0]),
             (events[0], participants[1]),

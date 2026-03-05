@@ -2,6 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import EventViewSet, ParticipantViewSet, RegistrationViewSet
 
+# DefaultRouter automatically generates standard CRUD endpoints for each registered ViewSet
+# e.g. GET/POST /events/, GET/PUT/DELETE /events/{id}/
 router = DefaultRouter()
 router.register(r'events', EventViewSet)
 router.register(r'participants', ParticipantViewSet)

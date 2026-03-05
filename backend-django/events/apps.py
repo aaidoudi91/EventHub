@@ -1,3 +1,4 @@
+# Registers the 'events' application and sets its default configuration.
 from django.apps import AppConfig
 
 class EventsConfig(AppConfig):

@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import Event, Participant, Registration
 
+# Registers all three models in the Django admin interface with
+# sensible list displays, filters and search fields for each.
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'location', 'status')
