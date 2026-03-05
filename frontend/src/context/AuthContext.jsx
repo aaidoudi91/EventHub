@@ -4,6 +4,7 @@ import api from '../api/axios';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+    // Rehydrate user from localStorage so the session survives a page refresh
     const [user, setUser] = useState(() => {
         const stored = localStorage.getItem('user');
         return stored ? JSON.parse(stored) : null;
@@ -14,7 +15,8 @@ export const AuthProvider = ({ children }) => {
         const { access, refresh } = response.data;
         localStorage.setItem('access_token', access);
         localStorage.setItem('refresh_token', refresh);
-        // Décode le payload du token pour récupérer is_staff
+        // The JWT payload is base64-encoded — decode it to extract is_staff
+        // without making an additional API call
         const payload = JSON.parse(atob(access.split('.')[1]));
         const userData = { username, isAdmin: payload.is_staff ?? false };
         localStorage.setItem('user', JSON.stringify(userData));

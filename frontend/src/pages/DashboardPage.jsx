@@ -4,6 +4,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
 
+// Reusable stat card displayed in the dashboard summary grid
 const StatCard = ({ label, value, color, icon }) => (
     <div className={`bg-white dark:bg-gray-900 rounded-2xl p-6 shadow flex flex-col gap-2 border-t-4 ${color} transition-colors`}>
         <div className="flex items-center justify-between">
@@ -22,8 +23,8 @@ const getGreeting = () => {
 };
 
 const statusColors = {
-    open: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-    closed: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300',
+    open:      'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+    closed:    'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300',
     cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300',
 };
 
@@ -38,6 +39,7 @@ const DashboardPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch all three resources in parallel to minimize load time
                 const [eventsRes, participantsRes, registrationsRes] = await Promise.all([
                     api.get('/events/'),
                     api.get('/participants/'),
@@ -54,7 +56,7 @@ const DashboardPage = () => {
                     totalRegistrations: registrationsRes.data.length,
                 });
 
-                // 3 prochains events ouverts triés par date
+                // Next 3 upcoming open events sorted by date ascending
                 const now = new Date();
                 const upcoming = events
                     .filter(e => e.status === 'open' && new Date(e.date) >= now)
@@ -62,7 +64,7 @@ const DashboardPage = () => {
                     .slice(0, 3);
                 setUpcomingEvents(upcoming);
 
-                // 3 derniers participants créés
+                // 3 most recently created participants
                 const recent = [...participants]
                     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
                     .slice(0, 3);
@@ -83,7 +85,6 @@ const DashboardPage = () => {
     return (
         <div className="flex flex-col gap-8">
 
-            {/* Message de bienvenue */}
             <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                     {getGreeting()}, {user?.username} 👋
@@ -93,17 +94,15 @@ const DashboardPage = () => {
                 </p>
             </div>
 
-            {/* Stat cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <StatCard label="Total Events" value={stats.totalEvents} color="border-indigo-500" icon="📅" />
-                <StatCard label="Open Events" value={stats.openEvents} color={stats.openEvents === 0 ? 'border-red-500' : 'border-green-500'} icon="🟢" />
-                <StatCard label="Participants" value={stats.totalParticipants} color="border-yellow-500" icon="👥" />
-                <StatCard label="Registrations" value={stats.totalRegistrations} color="border-pink-500" icon="✅" />
+                <StatCard label="Total Events"   value={stats.totalEvents}       color="border-indigo-500" icon="📅" />
+                <StatCard label="Open Events"    value={stats.openEvents}        color={stats.openEvents === 0 ? 'border-red-500' : 'border-green-500'} icon="🟢" />
+                <StatCard label="Participants"   value={stats.totalParticipants} color="border-yellow-500" icon="👥" />
+                <StatCard label="Registrations"  value={stats.totalRegistrations} color="border-pink-500"  icon="✅" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
 
-                {/* Prochains événements */}
                 <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow transition-colors">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Events</h2>
@@ -123,10 +122,12 @@ const DashboardPage = () => {
                                         <p className="text-gray-400 text-xs mt-0.5">📍 {event.location}</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(event.date).toLocaleDateString()}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            {new Date(event.date).toLocaleDateString()}
+                                        </p>
                                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium mt-1 inline-block ${statusColors[event.status]}`}>
-                        {event.status}
-                      </span>
+                                            {event.status}
+                                        </span>
                                     </div>
                                 </Link>
                             ))}
@@ -134,7 +135,6 @@ const DashboardPage = () => {
                     }
                 </div>
 
-                {/* Derniers participants */}
                 <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow transition-colors">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Participants</h2>
@@ -145,7 +145,7 @@ const DashboardPage = () => {
                         : <div className="flex flex-col gap-3">
                             {recentParticipants.map(p => (
                                 <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800 transition-colors">
-                                    {/* Avatar initiales */}
+                                    {/* Avatar built from the participant's initials */}
                                     <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                                         {p.first_name[0]}{p.last_name[0]}
                                     </div>

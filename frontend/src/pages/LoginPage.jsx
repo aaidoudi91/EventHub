@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
+// Presentational component used to display a feature highlight on the left panel
 const Feature = ({ icon, title, description }) => (
     <div className="flex items-start gap-3">
         <span className="text-2xl">{icon}</span>
@@ -39,7 +40,7 @@ const LoginPage = () => {
     return (
         <div className="min-h-screen flex transition-colors duration-200 bg-gray-100 dark:bg-gray-950">
 
-            {/* Côté gauche — présentation */}
+            {/* Left panel — visible on large screens only */}
             <div className="hidden lg:flex flex-col justify-between w-1/2 bg-indigo-700 dark:bg-indigo-900 p-12">
                 <div>
                     <h1 className="text-4xl font-bold text-white mb-2">EventHub</h1>
@@ -67,10 +68,9 @@ const LoginPage = () => {
                 <p className="text-indigo-300 text-sm">Web Programming 2026 — Full-Stack Project</p>
             </div>
 
-            {/* Côté droit — formulaire */}
+            {/* Right panel — login form */}
             <div className="flex flex-col flex-1 items-center justify-center p-8 relative">
 
-                {/* Bouton thème */}
                 <button
                     onClick={toggleTheme}
                     className="absolute top-6 right-6 text-xl hover:scale-110 transition"
@@ -80,7 +80,7 @@ const LoginPage = () => {
                 </button>
 
                 <div className="w-full max-w-sm">
-                    {/* Logo visible uniquement sur mobile (côté gauche caché) */}
+                    {/* Fallback branding shown on mobile when the left panel is hidden */}
                     <div className="lg:hidden mb-8">
                         <h1 className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">EventHub</h1>
                         <p className="text-gray-500 dark:text-gray-400 text-sm">Event & Participant Management</p>
