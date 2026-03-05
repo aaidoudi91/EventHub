@@ -1,3 +1,4 @@
+// Express identifies error-handling middleware by its four-parameter signature (err, req, res, next)
 const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
     const status = err.status || 500;

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+// Represents a person who can be registered to one or more events
 const Participant = sequelize.define('Participant', {
     first_name: {
         type: DataTypes.STRING,

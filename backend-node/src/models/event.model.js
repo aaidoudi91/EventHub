@@ -1,3 +1,4 @@
+// Event model — mirrors the Django Event entity for the comparative backend
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 

@@ -1,8 +1,12 @@
+
+// Event routes — full CRUD with optional status filtering on list.
+// All errors are forwarded to the global error handler via next(err).
+
+
 const express = require('express');
 const router = express.Router();
 const { Event } = require('../models');
 
-// GET /api/events
 router.get('/', async (req, res, next) => {
     try {
         const where = {};
@@ -14,7 +18,6 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// GET /api/events/:id
 router.get('/:id', async (req, res, next) => {
     try {
         const event = await Event.findByPk(req.params.id);
@@ -25,7 +28,6 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// POST /api/events
 router.post('/', async (req, res, next) => {
     try {
         const event = await Event.create(req.body);
@@ -35,7 +37,6 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-// PUT /api/events/:id
 router.put('/:id', async (req, res, next) => {
     try {
         const event = await Event.findByPk(req.params.id);
@@ -47,7 +48,6 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-// DELETE /api/events/:id
 router.delete('/:id', async (req, res, next) => {
     try {
         const event = await Event.findByPk(req.params.id);

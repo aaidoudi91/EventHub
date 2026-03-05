@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+// Single Sequelize instance shared across all models
 const sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
