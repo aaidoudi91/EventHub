@@ -1,3 +1,8 @@
+// Participant routes — CRUD operations for the Participant entity.
+// All database interactions are delegated to Sequelize via the Participant model.
+// Errors are forwarded to the global error handler middleware via next(err).
+
+
 const express = require('express');
 const router = express.Router();
 const { Participant } = require('../models');
