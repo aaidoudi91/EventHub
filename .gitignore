@@ -1,13 +1,8 @@
 # OS
 .DS_Store
-.DS_Store?
-Thumbs.db
 
-# Editors
+# Editor
 .idea/
-.vscode/
-*.swp
-*.swo
 
 # Python
 __pycache__/
@@ -16,21 +11,18 @@ __pycache__/
 .venv/
 venv/
 
-# Django
-db.sqlite3
-*.log
-/backend-django/staticfiles/
-/backend-django/media/
-
-# Environment variables
-.env
-.env.*
-!.env.example
-
 # Node
 node_modules/
-package-lock.json
 
-# React / Vite
+# Environment
+.env
+
+# Django
+db.sqlite3
+staticfiles/
+
+# React build
 dist/
-*.local
+
+# Logs
+*.log
