@@ -15,6 +15,7 @@ const EventsPage = () => {
     const [form, setForm] = useState({ title: '', description: '', date: '', location: '', status: 'open' });
     const [showForm, setShowForm] = useState(false);
 
+    // Fetches events from the API, forwarding only the filter params that are set
     const fetchEvents = async () => {
         setLoading(true);
         try {
@@ -31,6 +32,7 @@ const EventsPage = () => {
         }
     };
 
+    // Re-fetch whenever a filter value changes
     useEffect(() => { fetchEvents(); }, [filters]);
 
     const handleCreate = async (e) => {
@@ -59,7 +61,7 @@ const EventsPage = () => {
         <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Events</h1>
 
-            {/* Filtres */}
+            {/* Filter bar — status, date range, reset */}
             <div className="flex flex-wrap gap-3 mb-6 bg-white dark:bg-gray-900 p-4 rounded-xl shadow transition-colors">
                 <select className={inputClass} value={filters.status} onChange={e => setFilters({ ...filters, status: e.target.value })}>
                     <option value="">All statuses</option>
@@ -72,6 +74,7 @@ const EventsPage = () => {
                 <button className={btn.cancel} onClick={() => setFilters({ status: '', date_from: '', date_to: '' })}>Reset</button>
             </div>
 
+            {/* Creation form — visible to admins only */}
             {user?.isAdmin && (
                 <button onClick={() => setShowForm(!showForm)} className={`mb-4 ${showForm ? btn.cancel : btn.primary}`}>
                     {showForm ? 'Cancel' : '+ New Event'}
@@ -96,9 +99,12 @@ const EventsPage = () => {
             {error && <p className="text-red-400 mb-4">{error}</p>}
             {loading ? <Spinner /> : (
                 <div className="flex flex-col gap-3">
+                    {events.length === 0 && (
+                        <p className="text-gray-400 text-sm">No events found for the selected filters.</p>
+                    )}
                     {events.map(event => (
                         <div key={event.id} className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            {/* Ligne titre + badge + bouton delete */}
+                            {/* Title, status badge and delete button on the same row */}
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <Link to={`/events/${event.id}`} className="text-indigo-600 dark:text-indigo-300 font-semibold hover:underline text-lg truncate">
@@ -112,16 +118,21 @@ const EventsPage = () => {
                                     </button>
                                 )}
                             </div>
-                            {/* Description + localisation */}
+                            {/* Location, date and optional description */}
                             <p className="text-gray-400 text-sm mt-1">
-                                📍 {event.location} — {new Date(event.date).toLocaleString()}
+                                📍 {event.location} — {new Date(event.date).toLocaleString(undefined, {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
                             </p>
                             {event.description && (
                                 <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{event.description}</p>
                             )}
                         </div>
                     ))}
-
                 </div>
             )}
         </div>

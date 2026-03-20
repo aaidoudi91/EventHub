@@ -1,3 +1,4 @@
+// Redirects unauthenticated users to the login page before rendering any protected content
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 

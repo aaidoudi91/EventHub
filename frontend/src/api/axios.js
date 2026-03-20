@@ -1,10 +1,11 @@
 import axios from 'axios';
 
+// Single Axios instance used throughout the app, pointing to the Django REST API
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
 });
 
-// Injecte le token dans chaque requête
+// Attach the JWT access token to every outgoing request
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -13,7 +14,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Si le serveur répond 401 alors token expiré ou invalide donc déconnexion forcée
+// Force logout if the server returns 401 (expired or invalid token)
 api.interceptors.response.use(
     (response) => response,
     (error) => {

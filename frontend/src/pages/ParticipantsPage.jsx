@@ -11,12 +11,15 @@ const ParticipantsPage = () => {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({ first_name: '', last_name: '', email: '', phone: '' });
+
+    // editingId tracks which participant row has its inline edit form open
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({ first_name: '', last_name: '', email: '', phone: '' });
     const [editError, setEditError] = useState('');
 
     const fetchParticipants = async () => {
         setLoading(true);
+        setError('');
         try {
             const res = await api.get('/participants/');
             setParticipants(res.data);
@@ -37,6 +40,7 @@ const ParticipantsPage = () => {
             setForm({ first_name: '', last_name: '', email: '', phone: '' });
             fetchParticipants();
         } catch {
+            // The most common cause is a duplicate email, which is unique at the DB level
             setError('Failed to create participant. Email may already exist.');
         }
     };
@@ -51,6 +55,7 @@ const ParticipantsPage = () => {
         }
     };
 
+    // Pre-fills the inline edit form with the participant's current values
     const startEditing = (p) => {
         setEditingId(p.id);
         setEditForm({ first_name: p.first_name, last_name: p.last_name, email: p.email, phone: p.phone || '' });
@@ -95,9 +100,9 @@ const ParticipantsPage = () => {
                     {participants.map(p => (
                         <div key={p.id} className="bg-white dark:bg-gray-900 rounded-xl shadow transition-colors overflow-hidden">
 
-                            {/* Ligne principale */}
                             <div className="flex items-center justify-between p-4">
                                 <div className="flex items-center gap-3">
+                                    {/* Avatar built from the participant's initials */}
                                     <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                                         {p.first_name[0]}{p.last_name[0]}
                                     </div>
@@ -106,9 +111,9 @@ const ParticipantsPage = () => {
                                         <p className="text-gray-400 text-sm">{p.email}{p.phone ? ` — ${p.phone}` : ''}</p>
                                     </div>
                                 </div>
-                                {/* Boutons edit et delete — séparés visuellement */}
                                 {user?.isAdmin && (
                                     <div className="flex gap-2">
+                                        {/* Clicking Edit on an already-open row closes it */}
                                         <button
                                             onClick={() => editingId === p.id ? setEditingId(null) : startEditing(p)}
                                             className={btn.edit}
@@ -122,7 +127,7 @@ const ParticipantsPage = () => {
                                 )}
                             </div>
 
-                            {/* Formulaire d'édition inline */}
+                            {/* Inline edit form — only rendered for the participant currently being edited */}
                             {editingId === p.id && (
                                 <form
                                     onSubmit={handleEdit}

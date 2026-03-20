@@ -9,6 +9,7 @@ import EventsPage from './pages/EventsPage';
 import EventDetailPage from './pages/EventDetailPage';
 import ParticipantsPage from './pages/ParticipantsPage';
 
+// Wraps every authenticated page with the navbar and a consistent padding
 function Layout({ children }) {
     return (
         <>
@@ -20,6 +21,9 @@ function Layout({ children }) {
 
 function App() {
     return (
+        // ThemeProvider wraps everything so the dark/light class is applied at the root level
+        // AuthProvider is inside ThemeProvider but outside BrowserRouter so auth state
+        // is available in all route components
         <ThemeProvider>
             <AuthProvider>
                 <BrowserRouter>
@@ -29,6 +33,7 @@ function App() {
                         <Route path="/events" element={<ProtectedRoute><Layout><EventsPage /></Layout></ProtectedRoute>} />
                         <Route path="/events/:id" element={<ProtectedRoute><Layout><EventDetailPage /></Layout></ProtectedRoute>} />
                         <Route path="/participants" element={<ProtectedRoute><Layout><ParticipantsPage /></Layout></ProtectedRoute>} />
+                        {/* Any unknown route redirects to the dashboard */}
                         <Route path="*" element={<Navigate to="/dashboard" replace />} />
                     </Routes>
                 </BrowserRouter>

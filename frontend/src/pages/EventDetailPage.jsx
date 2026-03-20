@@ -20,6 +20,9 @@ const EventDetailPage = () => {
     const [editForm, setEditForm] = useState(null);
     const [editError, setEditError] = useState('');
 
+    // Fetches the event, all registrations, and all participants in parallel.
+    // Registrations are then filtered client-side to keep only those belonging to this event.
+    // The date is sliced to 16 characters to match the datetime-local input format (YYYY-MM-DDTHH:MM).
     const fetchData = async () => {
         try {
             const [eventRes, regRes, partRes] = await Promise.all([
@@ -31,7 +34,7 @@ const EventDetailPage = () => {
             setEditForm({
                 title: eventRes.data.title,
                 description: eventRes.data.description,
-                date: eventRes.data.date.slice(0, 16),
+                date: toLocalDatetimeInput(eventRes.data.date),
                 location: eventRes.data.location,
                 status: eventRes.data.status,
             });
@@ -54,6 +57,7 @@ const EventDetailPage = () => {
             setSelectedParticipant('');
             fetchData();
         } catch (err) {
+            // The API returns business validation errors under non_field_errors
             setRegError(err.response?.data?.non_field_errors?.[0] || 'Registration failed.');
         }
     };
@@ -80,17 +84,23 @@ const EventDetailPage = () => {
         }
     };
 
+    // Converts a UTC datetime string to local time for datetime-local inputs
+    const toLocalDatetimeInput = (utcString) => {
+        const date = new Date(utcString);
+        const offset = date.getTimezoneOffset() * 60000;
+        return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+    };
+
     if (loading) return <Spinner />;
     if (error) return <p className="text-red-400">{error}</p>;
 
     return (
         <div className="max-w-2xl flex flex-col gap-6">
 
-            {/* Infos de l'event */}
+            {/* Event info card — toggles between read view and edit form */}
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow transition-colors">
                 {!isEditing ? (
                     <>
-                        {/* Ligne titre + badge + bouton edit */}
                         <div className="flex items-center justify-between gap-4 mb-3">
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{event.title}</h1>
@@ -102,9 +112,14 @@ const EventDetailPage = () => {
                                 </button>
                             )}
                         </div>
-                        {/* Méta-infos */}
                         <div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
-                            <span>📅 {new Date(event.date).toLocaleString()}</span>
+                            <span>📅 {new Date(event.date).toLocaleString(undefined, {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}</span>
                             <span>📍 {event.location}</span>
                         </div>
                         {event.description && (
@@ -132,7 +147,7 @@ const EventDetailPage = () => {
                 )}
             </div>
 
-            {/* Participants inscrits */}
+            {/* Registered participants — with unregister and registration form for admins */}
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow transition-colors">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                     Registered Participants ({registrations.length})
@@ -163,7 +178,8 @@ const EventDetailPage = () => {
                     </div>
                 }
 
-                {/* Formulaire inscription */}
+                {/* Registration form — only shown to admins for open events.
+                    Already-registered participants are excluded from the dropdown. */}
                 {user?.isAdmin && event.status === 'open' && (
                     <form onSubmit={handleRegister} className="flex gap-3 mt-5 items-center">
                         <select

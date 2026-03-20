@@ -1,3 +1,5 @@
+// Persistent top navigation bar rendered on all authenticated pages.
+// Displays links, the current user's name and role, a theme toggle, and a logout button.
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -24,11 +26,11 @@ const Navbar = () => {
                     {isDark ? '☀️' : '🌙'}
                 </button>
                 <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-          {user?.username}
+                    {user?.username}
                     <span className="ml-1 text-gray-400 dark:text-gray-500 font-normal">
-            ({user?.isAdmin ? 'Admin' : 'Viewer'})
-          </span>
-        </span>
+                        ({user?.isAdmin ? 'Admin' : 'Viewer'})
+                    </span>
+                </span>
                 <button onClick={handleLogout} className={btn.logout}>
                     Logout
                 </button>
