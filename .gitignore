@@ -8,3 +8,29 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Django
+db.sqlite3
+*.log
+/backend-django/staticfiles/
+/backend-django/media/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+package-lock.json
+
+# React / Vite
+dist/
+*.local
