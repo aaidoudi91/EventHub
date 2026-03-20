@@ -3,16 +3,20 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
+import { Calendar, CalendarArrowUp, UserRound, UsersRound } from 'lucide-react';
 
 // Reusable stat card displayed in the dashboard summary grid
-const StatCard = ({ label, value, color, icon }) => (
-    <div className={`bg-white dark:bg-gray-900 rounded-2xl p-6 shadow flex flex-col gap-2 border-t-4 ${color} transition-colors`}>
-        <div className="flex items-center justify-between">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">{label}</p>
-            <span className="text-2xl">{icon}</span>
+const StatCard = ({ label, value, icon, to }) => (
+    <Link
+        to={to}
+        className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow flex flex-col gap-1 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+    >
+        <div className="flex items-center justify-between mb-2">
+            <p className="text-gray-900 dark:text-white text-base font-semibold">{label}</p>
+            <span className="text-lg">{icon}</span>
         </div>
         <p className="text-4xl font-bold text-gray-900 dark:text-white">{value}</p>
-    </div>
+    </Link>
 );
 
 const getGreeting = () => {
@@ -87,19 +91,40 @@ const DashboardPage = () => {
 
             <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {getGreeting()}, {user?.username} 👋
+                    {getGreeting()}, {user?.username}
                 </h1>
                 <p className="text-gray-500 dark:text-gray-400 mt-1">
-                    Here's what's happening in EventHub today.
+                    Here's what's happening in EventHub.
                 </p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <StatCard label="Total Events"   value={stats.totalEvents}       color="border-indigo-500" icon="📅" />
-                <StatCard label="Open Events"    value={stats.openEvents}        color={stats.openEvents === 0 ? 'border-red-500' : 'border-green-500'} icon="🟢" />
-                <StatCard label="Participants"   value={stats.totalParticipants} color="border-yellow-500" icon="👥" />
-                <StatCard label="Registrations"  value={stats.totalRegistrations} color="border-pink-500"  icon="✅" />
+                <StatCard
+                    label="Total Events"
+                    value={stats.totalEvents}
+                    icon=<Calendar size={18} className="text-indigo-500"/>
+                    to="/events"
+                />
+                <StatCard
+                    label="Open Events"
+                    value={stats.openEvents}
+                    icon=<CalendarArrowUp size={18} className="text-indigo-500"/>
+                    to="/events?status=open"
+                />
+                <StatCard
+                    label="Participants"
+                    value={stats.totalParticipants}
+                    icon=<UserRound size={18} className="text-indigo-500"/>
+                    to="/participants"
+                />
+                <StatCard
+                    label="Registrations"
+                    value={stats.totalRegistrations}
+                    icon=<UsersRound size={18} className="text-indigo-500"/>
+                    to="/events"
+                />
             </div>
+
 
             <div className="grid md:grid-cols-2 gap-6">
 

@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
 import StatusBadge from '../components/StatusBadge';
 import { btn, inputClass } from '../styles/ui';
+import {MapPin, Calendar} from 'lucide-react';
 
 const EventDetailPage = () => {
     const { id } = useParams();
@@ -113,14 +114,19 @@ const EventDetailPage = () => {
                             )}
                         </div>
                         <div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
-                            <span>📅 {new Date(event.date).toLocaleString(undefined, {
+                            <span className="flex items-center gap-1">
+                                <Calendar size={14} />
+                                {new Date(event.date).toLocaleString(undefined, {
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric',
                                 hour: '2-digit',
                                 minute: '2-digit',
                             })}</span>
-                            <span>📍 {event.location}</span>
+                            <span className="flex items-center gap-1">
+                                <MapPin size={14} />
+                                {event.location}
+                            </span>
                         </div>
                         {event.description && (
                             <p className="text-gray-600 dark:text-gray-400 text-sm">{event.description}</p>

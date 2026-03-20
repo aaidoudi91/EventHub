@@ -1,21 +1,32 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
 import StatusBadge from '../components/StatusBadge';
 import { btn, inputClass } from '../styles/ui';
+import {MapPin} from 'lucide-react';
 
 const EventsPage = () => {
     const { user } = useAuth();
+    const location = useLocation();
+
+    const getInitialFilters = () => {
+        const params = new URLSearchParams(location.search);
+        return {
+            status: params.get('status') || '',
+            date_from: params.get('date_from') || '',
+            date_to: params.get('date_to') || '',
+        };
+    };
+
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [filters, setFilters] = useState({ status: '', date_from: '', date_to: '' });
+    const [filters, setFilters] = useState(getInitialFilters);
     const [form, setForm] = useState({ title: '', description: '', date: '', location: '', status: 'open' });
     const [showForm, setShowForm] = useState(false);
 
-    // Fetches events from the API, forwarding only the filter params that are set
     const fetchEvents = async () => {
         setLoading(true);
         try {
@@ -32,7 +43,6 @@ const EventsPage = () => {
         }
     };
 
-    // Re-fetch whenever a filter value changes
     useEffect(() => { fetchEvents(); }, [filters]);
 
     const handleCreate = async (e) => {
@@ -61,7 +71,6 @@ const EventsPage = () => {
         <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Events</h1>
 
-            {/* Filter bar — status, date range, reset */}
             <div className="flex flex-wrap gap-3 mb-6 bg-white dark:bg-gray-900 p-4 rounded-xl shadow transition-colors">
                 <select className={inputClass} value={filters.status} onChange={e => setFilters({ ...filters, status: e.target.value })}>
                     <option value="">All statuses</option>
@@ -74,7 +83,6 @@ const EventsPage = () => {
                 <button className={btn.cancel} onClick={() => setFilters({ status: '', date_from: '', date_to: '' })}>Reset</button>
             </div>
 
-            {/* Creation form — visible to admins only */}
             {user?.isAdmin && (
                 <button onClick={() => setShowForm(!showForm)} className={`mb-4 ${showForm ? btn.cancel : btn.primary}`}>
                     {showForm ? 'Cancel' : '+ New Event'}
@@ -104,7 +112,6 @@ const EventsPage = () => {
                     )}
                     {events.map(event => (
                         <div key={event.id} className="bg-white dark:bg-gray-900 rounded-xl p-4 shadow hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            {/* Title, status badge and delete button on the same row */}
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <Link to={`/events/${event.id}`} className="text-indigo-600 dark:text-indigo-300 font-semibold hover:underline text-lg truncate">
@@ -118,9 +125,8 @@ const EventsPage = () => {
                                     </button>
                                 )}
                             </div>
-                            {/* Location, date and optional description */}
-                            <p className="text-gray-400 text-sm mt-1">
-                                📍 {event.location} — {new Date(event.date).toLocaleString(undefined, {
+                            <p className="text-gray-400 text-sm mt-1 flex items-center gap-1">
+                                <MapPin size={15} className="flex-shrink-0"/> {event.location} — {new Date(event.date).toLocaleString(undefined, {
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric',

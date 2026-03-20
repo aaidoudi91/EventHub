@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { Calendar, Users, ShieldCheck, Sun, Moon } from 'lucide-react';
 
-// Presentational component used to display a feature highlight on the left panel
+// Le composant Feature applique text-white sur l'icône directement
 const Feature = ({ icon, title, description }) => (
     <div className="flex items-start gap-3">
-        <span className="text-2xl">{icon}</span>
+        <div className="text-white mt-0.5 flex-shrink-0">
+            {icon}
+        </div>
         <div>
             <p className="font-semibold text-white">{title}</p>
             <p className="text-indigo-200 text-sm">{description}</p>
@@ -49,34 +52,35 @@ const LoginPage = () => {
 
                 <div className="flex flex-col gap-8">
                     <Feature
-                        icon="📅"
+                        icon={<Calendar size={22} />}
                         title="Manage Events"
                         description="Create, update and track your events with status and date filtering."
                     />
                     <Feature
-                        icon="👥"
+                        icon={<Users size={22} />}
                         title="Track Participants"
                         description="Maintain a complete participant registry and manage registrations."
                     />
                     <Feature
-                        icon="🔐"
+                        icon={<ShieldCheck size={22} />}
                         title="Role-based Access"
                         description="Admins can edit everything. Viewers have read-only access."
                     />
                 </div>
 
-                <p className="text-indigo-300 text-sm">By Aaron Aidoudi - M1 Distributed Artificial Intelligence at Université Paris Cité</p>
+                <p className="text-indigo-300 text-sm">By Aaron Aidoudi — M1 Distributed Artificial Intelligence at Université Paris Cité</p>
             </div>
 
             {/* Right panel — login form */}
             <div className="flex flex-col flex-1 items-center justify-center p-8 relative">
 
+                {/* Toggle thème — Sun/Moon avec couleur adaptée au thème */}
                 <button
                     onClick={toggleTheme}
-                    className="absolute top-6 right-6 text-xl hover:scale-110 transition"
+                    className="absolute top-6 right-6 hover:scale-110 transition text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                     title="Toggle theme"
                 >
-                    {isDark ? '☀️' : '🌙'}
+                    {isDark ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
 
                 <div className="w-full max-w-sm">

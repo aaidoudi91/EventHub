@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { btn } from '../styles/ui';
+import {Sun, Moon } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -23,7 +24,7 @@ const Navbar = () => {
             <Link to="/participants" className="hover:text-indigo-500 dark:hover:text-indigo-300 transition text-sm font-medium">Participants</Link>
             <div className="ml-auto flex items-center gap-4">
                 <button onClick={toggleTheme} className="text-xl hover:scale-110 transition" title="Toggle theme">
-                    {isDark ? '☀️' : '🌙'}
+                    {isDark ? <Sun /> : <Moon />}
                 </button>
                 <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
                     {user?.username}
