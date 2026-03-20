@@ -182,7 +182,7 @@ App available at: http://localhost:5173
 
 ## Author
 
-Aaron Aidoudi - M1 Artificial Intelligence, Université Paris Cité
+Aaron Aidoudi - M1 Distributed Artificial Intelligence, Université Paris Cité
 
 Supervised by Prof. Alla Jammine
 
