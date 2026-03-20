@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Environnement
+# Environment
 .venv/
 venv/
 .env
@@ -11,9 +11,8 @@ venv/
 # Django
 db.sqlite3
 *.log
-/static/
+/staticfiles/
 /media/
-
 
 # OS
 .DS_Store

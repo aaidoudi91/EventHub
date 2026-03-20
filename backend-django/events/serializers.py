@@ -15,20 +15,22 @@ class ParticipantSerializer(serializers.ModelSerializer):
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
+    """Used for write operations — expects event and participant IDs."""
+
     class Meta:
         model = Registration
         fields = '__all__'
 
     def validate(self, data):
-        # Empêche la double inscription
+        # Prevent duplicate registrations before the database constraint is reached
         if Registration.objects.filter(
-            event=data['event'],
-            participant=data['participant']
+                event=data['event'],
+                participant=data['participant']
         ).exists():
             raise serializers.ValidationError(
                 "This participant is already registered for this event."
             )
-        # Empêche l'inscription à un event non ouvert
+        # Registrations are only allowed for open events
         if data['event'].status != 'open':
             raise serializers.ValidationError(
                 "Registrations are closed for this event."
@@ -37,7 +39,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class RegistrationDetailSerializer(serializers.ModelSerializer):
-    """Utilisé en lecture : affiche les objets imbriqués complets."""
+    """Used for read operations — nests full Event and Participant objects."""
+
     participant = ParticipantSerializer(read_only=True)
     event = EventSerializer(read_only=True)
 
