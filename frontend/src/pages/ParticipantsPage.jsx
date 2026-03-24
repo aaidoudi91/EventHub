@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
+import ConfirmModal from '../components/ConfirmModal';
 import { btn, inputClass } from '../styles/ui';
 
 const ParticipantsPage = () => {
@@ -11,11 +12,10 @@ const ParticipantsPage = () => {
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({ first_name: '', last_name: '', email: '', phone: '' });
-
-    // editingId tracks which participant row has its inline edit form open
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({ first_name: '', last_name: '', email: '', phone: '' });
     const [editError, setEditError] = useState('');
+    const [modal, setModal] = useState({ isOpen: false, participantId: null });
 
     const fetchParticipants = async () => {
         setLoading(true);
@@ -40,22 +40,21 @@ const ParticipantsPage = () => {
             setForm({ first_name: '', last_name: '', email: '', phone: '' });
             fetchParticipants();
         } catch {
-            // The most common cause is a duplicate email, which is unique at the DB level
             setError('Failed to create participant. Email may already exist.');
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Delete this participant?')) return;
+    const handleDelete = async () => {
         try {
-            await api.delete(`/participants/${id}/`);
+            await api.delete(`/participants/${modal.participantId}/`);
+            setModal({ isOpen: false, participantId: null });
             fetchParticipants();
         } catch {
             setError('Failed to delete participant.');
+            setModal({ isOpen: false, participantId: null });
         }
     };
 
-    // Pre-fills the inline edit form with the participant's current values
     const startEditing = (p) => {
         setEditingId(p.id);
         setEditForm({ first_name: p.first_name, last_name: p.last_name, email: p.email, phone: p.phone || '' });
@@ -76,6 +75,14 @@ const ParticipantsPage = () => {
 
     return (
         <div>
+            <ConfirmModal
+                isOpen={modal.isOpen}
+                title="Delete Participant"
+                message="This participant will be permanently deleted along with all their registrations."
+                onConfirm={handleDelete}
+                onCancel={() => setModal({ isOpen: false, participantId: null })}
+            />
+
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Participants</h1>
 
             {user?.isAdmin && (
@@ -99,10 +106,8 @@ const ParticipantsPage = () => {
                 <div className="flex flex-col gap-3">
                     {participants.map(p => (
                         <div key={p.id} className="bg-white dark:bg-gray-900 rounded-xl shadow transition-colors overflow-hidden">
-
                             <div className="flex items-center justify-between p-4">
                                 <div className="flex items-center gap-3">
-                                    {/* Avatar built from the participant's initials */}
                                     <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                                         {p.first_name[0]}{p.last_name[0]}
                                     </div>
@@ -113,21 +118,22 @@ const ParticipantsPage = () => {
                                 </div>
                                 {user?.isAdmin && (
                                     <div className="flex gap-2">
-                                        {/* Clicking Edit on an already-open row closes it */}
                                         <button
                                             onClick={() => editingId === p.id ? setEditingId(null) : startEditing(p)}
                                             className={btn.edit}
                                         >
                                             {editingId === p.id ? 'Cancel' : 'Edit'}
                                         </button>
-                                        <button onClick={() => handleDelete(p.id)} className={btn.delete}>
+                                        <button
+                                            onClick={() => setModal({ isOpen: true, participantId: p.id })}
+                                            className={btn.delete}
+                                        >
                                             Delete
                                         </button>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Inline edit form — only rendered for the participant currently being edited */}
                             {editingId === p.id && (
                                 <form
                                     onSubmit={handleEdit}
