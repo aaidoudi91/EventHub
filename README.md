@@ -68,7 +68,9 @@ eventhub/
 │       │   ├── Navbar.jsx       # Top navigation bar with theme toggle
 │       │   ├── ProtectedRoute.jsx    # Redirects unauthenticated users to /login
 │       │   ├── StatusBadge.jsx  # Colored badge for event status
-│       │   └── Spinner.jsx      # Loading indicator
+│       │   ├── Spinner.jsx      # Loading indicator
+│       │   └── ConfirmModal.jsx     # confirmation dialog box
+
 │       ├── pages/
 │       │   ├── LoginPage.jsx         # Split-screen login form
 │       │   ├── DashboardPage.jsx     # Stats, upcoming events, recent participants
