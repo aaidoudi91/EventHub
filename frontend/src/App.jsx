@@ -8,14 +8,16 @@ import DashboardPage from './pages/DashboardPage';
 import EventsPage from './pages/EventsPage';
 import EventDetailPage from './pages/EventDetailPage';
 import ParticipantsPage from './pages/ParticipantsPage';
+import Footer from './components/Footer';
 
 // Wraps every authenticated page with the navbar and a consistent padding
 function Layout({ children }) {
     return (
-        <>
+        <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-950 transition-colors">
             <Navbar />
-            <main className="p-8">{children}</main>
-        </>
+            <main className="p-8 flex-1">{children}</main>
+            <Footer />
+        </div>
     );
 }
 

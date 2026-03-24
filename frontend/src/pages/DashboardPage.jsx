@@ -65,13 +65,13 @@ const DashboardPage = () => {
                 const upcoming = events
                     .filter(e => e.status === 'open' && new Date(e.date) >= now)
                     .sort((a, b) => new Date(a.date) - new Date(b.date))
-                    .slice(0, 3);
+                    .slice(0, 4);
                 setUpcomingEvents(upcoming);
 
                 // 3 most recently created participants
                 const recent = [...participants]
                     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                    .slice(0, 3);
+                    .slice(0, 4);
                 setRecentParticipants(recent);
 
             } catch {
