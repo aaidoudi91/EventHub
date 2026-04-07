@@ -85,9 +85,8 @@ eventhub/
 ## Tech Stack & System Roles
 
 ### React - Frontend SPA
-A Single Page Application that consumes the Django REST API.
-Handles JWT token storage, role-based UI rendering (admin vs viewer),
-and all CRUD interactions with loading and error state management.
+A Single Page Application that consumes the Django REST API. Handles JWT token storage, role-based UI rendering (admin 
+vs viewer), and all CRUD interactions with loading and error state management.
 
 | Technology      | Purpose                                   |
 | --------------- |-------------------------------------------|
@@ -99,9 +98,8 @@ and all CRUD interactions with loading and error state management.
 
 
 ### Django - Main Backend
-Handles all core business logic. Provides a complete REST API with JWT
-authentication, role-based permissions, relational data modeling,
-and input validation. This is the backend the React frontend communicates with.
+Handles all core business logic. Provides a complete REST API with JWT authentication, role-based permissions, 
+relational data modeling, and input validation. This is the backend the React frontend communicates with.
 Available at ```/api/``` with Swagger documentation at ```/api/docs/```.
 
 | Technology                       | Purpose                                 |
@@ -115,9 +113,8 @@ Available at ```/api/``` with Swagger documentation at ```/api/docs/```.
 
 
 ### Node.js / Express - Comparative Backend
-A simplified parallel implementation of the API covering Events and Participants only.
-Its purpose is a comparative study against Django, not used by the frontend.
-Runs independently on port 3000.
+A simplified parallel implementation of the API covering Events and Participants only. Its purpose is a comparative 
+study against Django, not used by the frontend. Runs independently on port 3000.
 
 | Technology | Purpose                              |
 | ---------- | ------------------------------------ |
@@ -126,7 +123,6 @@ Runs independently on port 3000.
 | PostgreSQL | Database                             |
 
 ### Infrastructure
-
 | Service | Role                                                   |
 | ------- | ------------------------------------------------------ |
 | Vercel  | Frontend hosting with automatic deploys from Git       |
@@ -141,10 +137,9 @@ Runs independently on port 3000.
 - pip, npm
 
 ### Django Backend
-
 ```bash
 cd backend-django
-source venv/bin/activate        # Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Run migrations and seed the database
@@ -154,7 +149,6 @@ python manage.py seed
 # Start the server
 python manage.py runserver
 ```
-
 API available at: http://localhost:8000
 Swagger docs at: http://localhost:8000/api/docs/
 
@@ -169,7 +163,6 @@ touch .env
 
 npm run dev
 ```
-
 API available at: http://localhost:3000
 
 
@@ -182,12 +175,6 @@ npm run dev
 App available at: http://localhost:5173
 
 ## Author
-
 Aaron Aidoudi - M1 Distributed Artificial Intelligence, Université Paris Cité
 
-Supervised by Prof. Alla Jammine
-
-
-
-
-
+Supervised by Dr. Alla Jammine
