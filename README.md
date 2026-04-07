@@ -1,10 +1,10 @@
-# EventHub — Event & Participant Management System
+# EventHub - Event & Participant Management System
 
-EventHub is a full-stack web application for managing events, participants,
-and registrations. It features role-based access control,
-JWT authentication, and a complete REST API — built as part of the
-Web Programming 2026 course to demonstrate relational data modeling,
-multi-backend architecture, and production deployment.
+EventHub is a full-stack web application for managing events, participants, and registrations. 
+It features role-based access control, JWT authentication, and a complete REST API. Built as part of the Web Programming
+course to demonstrate relational data modeling, multi-backend architecture, and production deployment.
+
+**Live application:** https://eventhub-iota.vercel.app
 
 ## Architecture
 
@@ -51,25 +51,25 @@ eventhub/
 │           └── errorHandler.js  # Global error handling middleware
 │
 ├── frontend/
-│   ├── index.html               # App shell — contains the #root mount point
+│   ├── index.html               # App shell, contains the #root mount point
 │   ├── vite.config.js           # Vite + Tailwind CSS plugin configuration
 │   ├── eslint.config.js         # Linting rules
 │   ├── vercel.json              # SPA rewrite rule (fixes 404 on page refresh)
 │   └── src/
-│       ├── main.jsx             # React entry point — mounts App into #root
+│       ├── main.jsx             # React entry point, mounts App into #root
 │       ├── App.jsx              # Router, layout, and route protection setup
 │       ├── index.css            # Tailwind import + global body styles
 │       ├── api/
 │       │   └── axios.js         # Axios instance with base URL + JWT interceptor
 │       ├── context/
-│       │   ├── AuthContext.jsx  # Auth state, login/logout, token management
-│       │   └── ThemeContext.jsx # Dark/light theme toggle, persisted in localStorage
+│       │   ├── AuthContext.jsx   # Auth state, login/logout, token management
+│       │   └── ThemeContext.jsx  # Dark/light theme toggle, persisted in localStorage
 │       ├── components/
-│       │   ├── Navbar.jsx       # Top navigation bar with theme toggle
+│       │   ├── Navbar.jsx            # Top navigation bar with theme toggle
 │       │   ├── ProtectedRoute.jsx    # Redirects unauthenticated users to /login
-│       │   ├── StatusBadge.jsx  # Colored badge for event status
-│       │   ├── Spinner.jsx      # Loading indicator
-│       │   └── ConfirmModal.jsx     # confirmation dialog box
+│       │   ├── StatusBadge.jsx       # Colored badge for event status
+│       │   ├── Spinner.jsx           # Loading indicator
+│       │   └── ConfirmModal.jsx      # Confirmation dialog box
 
 │       ├── pages/
 │       │   ├── LoginPage.jsx         # Split-screen login form
@@ -79,27 +79,26 @@ eventhub/
 │       │   └── ParticipantsPage.jsx  # Participant list with create/edit/delete
 │       └── styles/
 │           └── ui.js            # Centralized Tailwind class definitions (buttons, badges, inputs)
-│
-└── docs/
+└── 
 ```
 
 ## Tech Stack & System Roles
 
-### React — Frontend SPA
+### React - Frontend SPA
 A Single Page Application that consumes the Django REST API.
 Handles JWT token storage, role-based UI rendering (admin vs viewer),
 and all CRUD interactions with loading and error state management.
 
-| Technology      | Purpose                                    |
-| --------------- | ------------------------------------------ |
-| React 18        | UI — functional components and hooks       |
-| Vite            | Build tool and dev server                  |
-| React Router v6 | Client-side routing + route protection     |
-| Axios           | HTTP client with JWT interceptor           |
+| Technology      | Purpose                                   |
+| --------------- |-------------------------------------------|
+| React 18        | UI, functional components and hooks       |
+| Vite            | Build tool and dev server                 |
+| React Router v6 | Client-side routing + route protection    |
+| Axios           | HTTP client with JWT interceptor          |
 | Tailwind CSS    | Utility-first styling with dark/light mode |
 
 
-### Django — Main Backend
+### Django - Main Backend
 Handles all core business logic. Provides a complete REST API with JWT
 authentication, role-based permissions, relational data modeling,
 and input validation. This is the backend the React frontend communicates with.
@@ -115,9 +114,9 @@ Available at ```/api/``` with Swagger documentation at ```/api/docs/```.
 | PostgreSQL / SQLite              | Production / development database       |
 
 
-### Node.js / Express — Comparative Backend
+### Node.js / Express - Comparative Backend
 A simplified parallel implementation of the API covering Events and Participants only.
-Its purpose is a comparative study against Django — not used by the frontend.
+Its purpose is a comparative study against Django, not used by the frontend.
 Runs independently on port 3000.
 
 | Technology | Purpose                              |
