@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Calendar, Users, ShieldCheck, Sun, Moon } from 'lucide-react';
 
-// Le composant Feature applique text-white sur l'icône directement
 const Feature = ({ icon, title, description }) => (
     <div className="flex items-start gap-3">
         <div className="text-white mt-0.5 flex-shrink-0">
@@ -74,7 +73,6 @@ const LoginPage = () => {
             {/* Right panel — login form */}
             <div className="flex flex-col flex-1 items-center justify-center p-8 relative">
 
-                {/* Toggle thème — Sun/Moon avec couleur adaptée au thème */}
                 <button
                     onClick={toggleTheme}
                     className="absolute top-6 right-6 hover:scale-110 transition text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
