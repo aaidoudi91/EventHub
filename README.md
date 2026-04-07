@@ -164,7 +164,6 @@ npm run dev
 ```
 API available at: http://localhost:3000
 
-
 ### React Frontend
 ```bash
 cd frontend
@@ -172,6 +171,15 @@ npm install
 npm run dev
 ```
 App available at: http://localhost:5173
+
+### Demo Credentials
+To test the application's role-based access control (both on the live URL and locally after running `seed.py`), you can 
+use the following pre-configured accounts:
+
+| Role | Username | Password    | Permissions       |
+| :--- | :--- |:------------|:------------------|
+| **Admin** | `admin` | `admin123`  | Full access       |
+| **Viewer** | `viewer` | `viewer123` | Read-only access  |
 
 ## Author
 Aaron Aidoudi - M1 Distributed Artificial Intelligence, Université Paris Cité
