@@ -1,4 +1,3 @@
-
 // Event routes — full CRUD with optional status filtering on list.
 // All errors are forwarded to the global error handler via next(err).
 
