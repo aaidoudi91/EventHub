@@ -4,7 +4,6 @@ EventHub is a full-stack web application for managing events, participants, and 
 It features role-based access control, JWT authentication, and a complete REST API. Built as part of the Web Programming
 course to demonstrate relational data modeling, multi-backend architecture, and production deployment.
 
-**Live application:** https://eventhub-iota.vercel.app
 
 ## Architecture
 
