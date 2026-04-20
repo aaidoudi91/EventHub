@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      initContainers:
+        - name: migrate
+          image: aaidoudi/eventhub-django:1.0
+          command: ["sh", "-c", "python manage.py migrate && python manage.py seed"]
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secret
+                  key: db-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secret
+                  key: db-password
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secret
+                  key: django-secret-key
+            - name: DATABASE_URL
+              value: "postgresql://$(DB_USER):$(DB_PASSWORD)@postgres-service:5432/eventhub"
+          envFrom:
+            - configMapRef:
+                name: eventhub-config
+      containers:
+        - name: django
+          image: aaidoudi/eventhub-django:1.0
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secret
+                  key: db-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secret
+                  key: db-password
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: eventhub-secret
+                  key: django-secret-key
+            - name: DATABASE_URL
+              value: "postgresql://$(DB_USER):$(DB_PASSWORD)@postgres-service:5432/eventhub"
+          envFrom:
+            - configMapRef:
+                name: eventhub-config
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
