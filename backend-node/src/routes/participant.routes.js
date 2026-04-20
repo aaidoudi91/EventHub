@@ -6,9 +6,10 @@
 const express = require('express');
 const router = express.Router();
 const { Participant } = require('../models');
+const { authenticate, requireAdmin } = require('../middleware/authMiddleware');
 
 // GET /api/participants
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
     try {
         const participants = await Participant.findAll({ order: [['last_name', 'ASC']] });
         res.json(participants);
@@ -18,7 +19,7 @@ router.get('/', async (req, res, next) => {
 });
 
 // GET /api/participants/:id
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authenticate, async (req, res, next) => {
     try {
         const participant = await Participant.findByPk(req.params.id);
         if (!participant) return res.status(404).json({ error: 'Participant not found' });
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST /api/participants
-router.post('/', async (req, res, next) => {
+router.post('/', authenticate, requireAdmin, async (req, res, next) => {
     try {
         const participant = await Participant.create(req.body);
         res.status(201).json(participant);
@@ -39,7 +40,7 @@ router.post('/', async (req, res, next) => {
 });
 
 // PUT /api/participants/:id
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authenticate, requireAdmin, async (req, res, next) => {
     try {
         const participant = await Participant.findByPk(req.params.id);
         if (!participant) return res.status(404).json({ error: 'Participant not found' });
@@ -51,7 +52,7 @@ router.put('/:id', async (req, res, next) => {
 });
 
 // DELETE /api/participants/:id
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticate, requireAdmin, async (req, res, next) => {
     try {
         const participant = await Participant.findByPk(req.params.id);
         if (!participant) return res.status(404).json({ error: 'Participant not found' });

@@ -5,8 +5,9 @@
 const express = require('express');
 const router = express.Router();
 const { Event } = require('../models');
+const { authenticate, requireAdmin } = require('../middleware/authMiddleware');
 
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
     try {
         const where = {};
         if (req.query.status) where.status = req.query.status;
@@ -17,7 +18,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authenticate, async (req, res, next) => {
     try {
         const event = await Event.findByPk(req.params.id);
         if (!event) return res.status(404).json({ error: 'Event not found' });
@@ -27,7 +28,7 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', authenticate, requireAdmin, async (req, res, next) => {
     try {
         const event = await Event.create(req.body);
         res.status(201).json(event);
@@ -36,7 +37,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authenticate, requireAdmin, async (req, res, next) => {
     try {
         const event = await Event.findByPk(req.params.id);
         if (!event) return res.status(404).json({ error: 'Event not found' });
@@ -47,7 +48,7 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticate, requireAdmin, async (req, res, next) => {
     try {
         const event = await Event.findByPk(req.params.id);
         if (!event) return res.status(404).json({ error: 'Event not found' });
