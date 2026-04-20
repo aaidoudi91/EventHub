@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
 spec:
+  serviceName: postgres-service
   replicas: 1
   selector:
     matchLabels:
@@ -33,6 +34,15 @@ spec:
                 secretKeyRef:
                   name: eventhub-secret
                   key: db-password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
@@ -41,6 +51,11 @@ spec:
               command: ["pg_isready", "-U", "eventhub_user", "-d", "eventhub"]
             initialDelaySeconds: 5
             periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "eventhub_user", "-d", "eventhub"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
