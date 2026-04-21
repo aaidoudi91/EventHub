@@ -18,7 +18,14 @@ spec:
       initContainers:
         - name: migrate
           image: aaidoudi/eventhub-django:1.0
-          command: ["sh", "-c", "python manage.py migrate && python manage.py seed"]
+          command: [ "sh", "-c", "python manage.py migrate && python manage.py seed" ]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"        # ← était implicitement hérité, on le fixe bas
+            limits:
+              memory: "256Mi"
+              cpu: "300m"
           env:
             - name: DB_USER
               valueFrom:
@@ -73,8 +80,8 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "128Mi"
+              cpu: "100m"
             limits:
               memory: "512Mi"
               cpu: "500m"

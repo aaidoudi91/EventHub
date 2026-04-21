@@ -7,5 +7,5 @@ data:
   DB_PORT: "5432"
   DB_NAME: "eventhub"
   DEBUG: "False"
-  ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0,10.244.0.0/16,192.168.49.2"
+  ALLOWED_HOSTS: "*"
   CORS_ALLOWED_ORIGINS: "http://localhost:5173"
