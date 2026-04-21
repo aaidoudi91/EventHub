@@ -17,7 +17,7 @@ spec:
         - name: dockerhub-secret
       containers:
         - name: node
-          image: aaidoudi/eventhub-node:1.1
+          image: aaidoudi/eventhub-node:1.2
           ports:
             - containerPort: 3000
           env:
