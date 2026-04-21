@@ -121,11 +121,14 @@ study against Django, not used by the frontend. Runs independently on port 3000.
 | PostgreSQL | Database                             |
 
 ### Infrastructure
-| Service | Role                                                   |
-| ------- | ------------------------------------------------------ |
-| Vercel  | Frontend hosting with automatic deploys from Git       |
-| Railway | Django backend + Node.js backend + PostgreSQL database |
-
+| Service | Role |
+| ------- | ---- |
+| Vercel | Frontend hosting with automatic deploys from Git |
+| Railway | Django backend + Node.js backend + PostgreSQL database (web course deployment) |
+| Google Kubernetes Engine | 3-node `e2-medium` cluster in `europe-west1-b` (distributed course deployment) |
+| Docker Hub | Multi-architecture image registry (`amd64` + `arm64`) |
+| Istio | Service mesh — mTLS encryption and AuthorizationPolicy |
+| Ingress NGINX | Single entry point, path-based routing to microservices |
 
 ## Running Locally
 
@@ -179,6 +182,86 @@ use the following pre-configured accounts:
 | :--- | :--- |:------------|:------------------|
 | **Admin** | `admin` | `admin123`  | Full access       |
 | **Viewer** | `viewer` | `viewer123` | Read-only access  |
+
+## Distributed Deployment (Kubernetes)
+This project was extended as part of the Distributed Programming course to demonstrate
+a microservices architecture deployed on Kubernetes.
+
+### What was added
+- **Dockerfiles** for both backends, with multi-architecture builds (`linux/amd64` + `linux/arm64`)  
+  Images published on Docker Hub: [hub.docker.com/u/aaidoudi](https://hub.docker.com/u/aaidoudi)
+- **Docker Compose** for local orchestration of the full stack (PostgreSQL + Django + Node.js)
+- **Kubernetes manifests** (`k8s/`) covering:
+  - PostgreSQL StatefulSet with PersistentVolumeClaim (1Gi)
+  - Django and Node.js Deployments with initContainer for migrations
+  - ClusterIP Services with Istio-compatible port naming
+  - Ingress NGINX gateway routing `/api/auth`, `/api/events`, `/api/registrations`, `/api/docs` to Django, and `/api/participants` to Node.js
+  - Kubernetes Secrets and ConfigMap for environment injection
+  - RBAC: dedicated ServiceAccount, Role and RoleBinding per service (least privilege)
+  - Istio mTLS (PERMISSIVE mode) + AuthorizationPolicy restricting PostgreSQL access to Django and Node.js only
+- **GKE deployment** on a 3-node `e2-medium` cluster in `europe-west1-b`
+
+### Architecture
+
+```
+├── k8s/
+│   ├── secret.yaml              # Base64-encoded credentials (DB password, Django secret key, JWT secret)
+│   ├── configmap.yaml           # Non-sensitive config (DB host/port/name, debug mode, allowed hosts)
+│   ├── ingress.yaml             # NGINX Ingress gateway — routes /api/* to Django or Node.js by path prefix
+│   │
+│   ├── postgres/
+│   │   ├── deployment.yaml     # PostgreSQL StatefulSet (stable pod identity, ordered restarts)
+│   │   ├── service.yaml         # Headless ClusterIP service — port named tcp-postgres for Istio protocol detection
+│   │   └── pvc.yaml             # PersistentVolumeClaim (1Gi, ReadWriteOnce) — survives pod restarts
+│   │
+│   ├── django/
+│   │   ├── deployment.yaml      # Django Deployment — initContainer runs migrations + seed before app starts
+│   │   └── service.yaml         # ClusterIP service — port named http for Istio protocol detection
+│   │
+│   ├── node/
+│   │   ├── deployment.yaml      # Node.js Deployment — JWT validated locally via shared secret
+│   │   └── service.yaml         # ClusterIP service — port named http for Istio protocol detection
+│   │
+│   ├── rbac/
+│   │   ├── serviceaccounts.yaml # One dedicated ServiceAccount per service (django-sa, node-sa, postgres-sa)
+│   │   ├── roles.yaml           # Least-privilege Roles — read-only access to Secrets/ConfigMaps
+│   │   └── rolebindings.yaml    # Binds each Role to its ServiceAccount
+│   │
+│   └── istio/
+│       ├── mtls.yaml            # PeerAuthentication PERMISSIVE — mTLS between mesh pods, plain HTTP from Ingress
+│       └── authorization-policy.yaml  # ALLOW rules — PostgreSQL restricted to django-sa and node-sa only
+```
+
+### Running on Kubernetes (Minikube)
+
+```bash
+# 1. Start Minikube and enable Ingress
+minikube start
+minikube addons enable ingress
+
+# 2. Apply manifests in order
+kubectl apply -f k8s/secret.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/rbac/
+kubectl apply -f k8s/postgres/
+kubectl wait --for=condition=ready pod -l app=postgres --timeout=120s
+kubectl apply -f k8s/django/
+kubectl apply -f k8s/node/
+kubectl apply -f k8s/ingress.yaml
+
+# 3. Install Istio
+istioctl install --set profile=demo -y
+kubectl label namespace default istio-injection=enabled
+kubectl rollout restart deployment django node
+kubectl rollout restart statefulset postgres
+kubectl apply -f k8s/istio/
+
+# 4. Access the API
+kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
+# API available at http://localhost:8080
+```
+
+> For GKE deployment, see section 7 of the project report.
 
 ## Author
 Aaron Aidoudi - M1 Distributed Artificial Intelligence, Université Paris Cité
