@@ -1,0 +1,47 @@
+# Django : autorise tout le monde (auth applicative gérée par JWT)
+# Pas de restriction source car le trafic vient de l'ingress hors-mesh
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: django-authz
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: django
+  action: ALLOW
+  rules:
+    - {}   # règle vide = autorise toute source
+---
+# Node.js : même logique que Django
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: node-authz
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: node
+  action: ALLOW
+  rules:
+    - {}
+---
+# PostgreSQL : accès STRICTEMENT limité aux ServiceAccounts django-sa et node-sa
+# Postgres n'est jamais appelé depuis l'extérieur du mesh — règle stricte possible
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: postgres-authz
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/default/sa/django-sa"
+              - "cluster.local/ns/default/sa/node-sa"

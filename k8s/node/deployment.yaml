@@ -12,6 +12,9 @@ spec:
       labels:
         app: node
     spec:
+      serviceAccountName: node-sa
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
         - name: node
           image: aaidoudi/eventhub-node:1.1

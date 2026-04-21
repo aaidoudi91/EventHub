@@ -1,0 +1,41 @@
+# Rôle pour Django : lecture des secrets et configmaps uniquement
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: django-role
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+# Rôle pour Node.js : lecture des configmaps et secrets uniquement
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: node-role
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+# Rôle pour PostgreSQL : gestion de son propre pod uniquement
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: postgres-role
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list"]

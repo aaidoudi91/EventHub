@@ -12,6 +12,9 @@ spec:
       labels:
         app: django
     spec:
+      serviceAccountName: django-sa
+      imagePullSecrets:
+        - name: dockerhub-secret
       initContainers:
         - name: migrate
           image: aaidoudi/eventhub-django:1.0
